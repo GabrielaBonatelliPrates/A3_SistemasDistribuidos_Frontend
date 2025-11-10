@@ -2,7 +2,7 @@
 
 # Sistema de Controle de Estoque Distribuído
 
-Este projeto foi desenvolvido como parte da disciplina de **Sistemas Distribuídos** na UNISUL. O sistema realiza o controle de estoque utilizando Java e MySQL.
+Este projeto foi desenvolvido como parte da disciplina de **Sistemas Distribuídos** na UNISUL. O sistema realiza o controle de estoque utilizando Java.
 
 ---
 
@@ -25,24 +25,11 @@ Representação visual usada para a identificação das relações entre os elem
 
 ---
 
-## 🗃️ Banco de Dados
-
-O arquivo "[bancoDeDados.sql](https://www.notion.so/bancoDeDados.sql)"
-foi criado para gerar o banco de dados e suas respectivas tabelas.
-
-**Credenciais de acesso ao banco de dados:**
-
-- **Usuário:** "root"
-- **Senha:** "senha"
-
----
 
 ## 🛠️ Tecnologias Utilizadas
 
 - **Java Development Kit (JDK)**: 23.0.2
-- **SQL Workbench**: 8.0
 - **IDE**: Apache NetBeans 25
-- **Versão do driver JDBC (MySQL Connector/J)**: 9.3.0
 - **Versão de Maven**: 4.0.0
 - **Conexão RMI entre os repositórios envolvidos no projeto**
 
