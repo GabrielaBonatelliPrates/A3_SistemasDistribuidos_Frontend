@@ -1,16 +1,16 @@
 package view;
 
 import javax.swing.table.DefaultTableModel;
-import dao.CategoriaDAO;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import model.Categoria;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import remote.RemoteCategoria;
 
 /**
  * FrmGerenciarCategoria é um JFrame para atualizar e excluir categorias.
@@ -18,17 +18,16 @@ import javax.swing.JOptionPane;
  * @author Estermrn
  */
 public class FrmGerenciarCategoria extends javax.swing.JFrame {
-private CategoriaDAO categoriaDAO;
+private RemoteCategoria categoriaDAO;
  private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Nome", "Tamanho", "Embalagem"}, 0);
 
     /**
      *
      * @param categoriaDAO valor inicial de categoriaDAO
      */
-    public FrmGerenciarCategoria(CategoriaDAO categoriaDAO) {
+    public FrmGerenciarCategoria(RemoteCategoria categoriaDAO) throws RemoteException {
         this.categoriaDAO = categoriaDAO;
         initComponents();
-        mostrarTabela();
         setExtendedState(FrmGerenciarCategoria.MAXIMIZED_BOTH);
 
     }
@@ -36,7 +35,7 @@ private CategoriaDAO categoriaDAO;
     /**
      * Atualiza a tabela sempre que a janela for aberta.
      */
-    public void mostrarTabela() {
+    public void mostrarTabela() throws RemoteException {
         modelo.setRowCount(0);
         modelo.setNumRows(0);
 
@@ -280,7 +279,11 @@ private CategoriaDAO categoriaDAO;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erro inesperado: " + e.getMessage());
         } finally {
-            mostrarTabela();
+            try {
+                mostrarTabela();
+            } catch (RemoteException ex) {
+                Logger.getLogger(FrmGerenciarCategoria.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_JBAtualizarActionPerformed
 
@@ -315,18 +318,26 @@ private CategoriaDAO categoriaDAO;
                     JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, icone, confirma, confirma[0]);
             
             if (resposta == 0) {
-                if (this.categoriaDAO.deletarCategoria(idCategoria)) {
-                    this.JTFNomeCategoria.setText("");
-                    this.JTFTamanho.setText("");
-                    this.JTFEmbalagem.setText("");
-                    JOptionPane.showMessageDialog(null, "Categoria excluída com sucesso!");
+                try {
+                    if (this.categoriaDAO.deletarCategoria(idCategoria)) {
+                        this.JTFNomeCategoria.setText("");
+                        this.JTFTamanho.setText("");
+                        this.JTFEmbalagem.setText("");
+                        JOptionPane.showMessageDialog(null, "Categoria excluída com sucesso!");
+                    }
+                } catch (RemoteException ex) {
+                    Logger.getLogger(FrmGerenciarCategoria.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
         } catch (Mensagem e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         } finally {
-            mostrarTabela();
+            try {
+                mostrarTabela();
+            } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
         }
     }//GEN-LAST:event_JBExcluirActionPerformed
 
@@ -372,8 +383,12 @@ private CategoriaDAO categoriaDAO;
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                CategoriaDAO categoriaDAO = null;
-                new FrmGerenciarCategoria(categoriaDAO).setVisible(true);
+                RemoteCategoria categoriaDAO = null;
+                try {
+                    new FrmGerenciarCategoria(categoriaDAO).setVisible(true);
+                } catch (RemoteException ex){
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+                }
             }
         });
     }
