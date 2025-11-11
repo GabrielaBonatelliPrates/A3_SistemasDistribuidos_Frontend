@@ -4,8 +4,8 @@ import javax.swing.JOptionPane;
 import java.util.List;
 import java.util.ArrayList;
 import model.Categoria;
-import dao.ProdutoDAO;
-import dao.CategoriaDAO;
+import remote.RemoteProduto;
+import remote.RemoteCategoria;
 
 /**
  * FrmCategoriaNova é um JFrame usado para cadastrar novas categorias.
@@ -13,8 +13,8 @@ import dao.CategoriaDAO;
  * @author GabrielaBonatelliPrates
  */
 public class FrmCategoriaNova extends javax.swing.JFrame {
-    private ProdutoDAO produtoDAO;
-    private CategoriaDAO categoriaDAO;
+    private RemoteProduto produtoDAO;
+    private RemoteCategoria categoriaDAO;
 
     /**
      * Lista que armazena as categorias cadastradas.
@@ -26,7 +26,7 @@ public class FrmCategoriaNova extends javax.swing.JFrame {
      * @param produtoDAO valor inicial de ProdutoDAO
      * @param categoriaDAO valor inicial de categoriaDAO
      */
-    public FrmCategoriaNova(ProdutoDAO produtoDAO, CategoriaDAO categoriaDAO) {
+    public FrmCategoriaNova(RemoteProduto produtoDAO, RemoteCategoria categoriaDAO) {
         this.produtoDAO = produtoDAO;
         this.categoriaDAO = categoriaDAO;
         initComponents();
@@ -238,7 +238,7 @@ public class FrmCategoriaNova extends javax.swing.JFrame {
             }           
             
             //Criar categoria nova e mostrar possiível erro
-            categoriaDAO.inserirCategoria(1, nomeCategoria, tamanho, embalagem);
+            categoriaDAO.cadastrarCategoria(1, nomeCategoria, tamanho, embalagem);
             boolean criou = categoriaDAO.verificaCategoria(nomeCategoria, tamanho, embalagem);
             if (criou) {
                 JOptionPane.showMessageDialog(this, "Categoria criada com sucesso!");
@@ -293,8 +293,8 @@ public class FrmCategoriaNova extends javax.swing.JFrame {
         //</editor-fold>
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ProdutoDAO produtoDAO = null;
-                CategoriaDAO categoriaDAO = null;
+                RemoteProduto produtoDAO = null;
+                RemoteCategoria categoriaDAO = null;
                 new FrmCategoriaNova(produtoDAO, categoriaDAO).setVisible(true);
             }
         });
