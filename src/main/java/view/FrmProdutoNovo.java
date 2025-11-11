@@ -1,10 +1,13 @@
 package view;
 
-import dao.CategoriaDAO;
+import java.rmi.RemoteException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import model.Categoria;
-import dao.ProdutoDAO;
+import remote.RemoteCategoria;
+import remote.RemoteProduto;
 
 /**FrmProdutoNovo é um JFrame para cadastrar produtos
  *
@@ -17,10 +20,10 @@ public class FrmProdutoNovo extends javax.swing.JFrame {
      * @param produtoDAO valor inicial de produtoDAO
      * @param categoriaDAO valor inicial de categoriaDAO
      */
-    private ProdutoDAO produtoDAO;
-    private CategoriaDAO categoriaDAO;
+    private RemoteProduto produtoDAO;
+    private RemoteCategoria categoriaDAO;
 
-    public FrmProdutoNovo(ProdutoDAO produtoDAO, CategoriaDAO categoriaDAO) {
+    public FrmProdutoNovo(RemoteProduto produtoDAO, RemoteCategoria categoriaDAO) throws RemoteException {
         this.produtoDAO = produtoDAO;
         this.categoriaDAO = categoriaDAO;
         initComponents();
@@ -33,7 +36,7 @@ public class FrmProdutoNovo extends javax.swing.JFrame {
      * 
      * Método paracarrega na combo box todas as categorias cadastradas
      */
-    public void mostrarCategorias() {
+    public void mostrarCategorias() throws RemoteException {
         //Cria um ArrayList para mostrar os nomes das categorias cadastrados no banco de dados
         List<Categoria> mostrarCategorias = categoriaDAO.mostrarCategorias();
 
@@ -499,11 +502,19 @@ public class FrmProdutoNovo extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBoxCategoriaActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        mostrarCategorias(); //para atualizar a tabela quando abrir o frame
+        try {
+            mostrarCategorias(); //para atualizar a tabela quando abrir o frame
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
     }//GEN-LAST:event_formWindowOpened
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        mostrarCategorias(); //para atualizar a tabela quando abrir o frame
+        try {
+            mostrarCategorias(); //para atualizar a tabela quando abrir o frame
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
     }//GEN-LAST:event_formWindowActivated
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
