@@ -1,19 +1,21 @@
 package view;
 
-import dao.ProdutoDAO;
-import dao.CategoriaDAO;
+import java.rmi.RemoteException;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.Produto;
 import model.Categoria;
+import remote.RemoteCategoria;
+import remote.RemoteProduto;
 
 /** FrmProdutoCategoria é um JFrame para mostrar o relatório de quantidade de produtos por categoria
  *
  * @author GabrielaBonatelliPrates
  */
 public class FrmProdutoCategoria extends javax.swing.JFrame {
-private ProdutoDAO produtoDAO;
-private CategoriaDAO categoriaDAO;
+private RemoteProduto produtoDAO;
+private RemoteCategoria categoriaDAO;
 private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Nome", "Quantidade de Produtos"}, 0);
 
     /**
@@ -21,7 +23,7 @@ private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Nom
      * @param produtoDAO valor inicial de produtoDAO
      * @param categoriaDAO valor inicial de categoriaDAO
      */
-    public FrmProdutoCategoria(ProdutoDAO produtoDAO, CategoriaDAO categoriaDAO) {
+    public FrmProdutoCategoria(RemoteProduto produtoDAO, RemoteCategoria categoriaDAO) throws RemoteException {
         this.produtoDAO = produtoDAO;
         this.categoriaDAO = categoriaDAO;
         initComponents();
@@ -34,13 +36,14 @@ private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Nom
      * 
      * Método para carregar na table os dados para o relatório
      */
-    public void carregaTabela() {
+    public void carregaTabela() throws RemoteException {
         modelo.setRowCount(0); //limpa a tabela
         modelo.setNumRows(0); //posiciona na primeira linha da tabela
 
-        List<Categoria> categorias = categoriaDAO.mostrarCategorias(); //acha os produtos acima do máximo
+        List<Categoria> categorias = null;
+        categorias = categoriaDAO.mostrarCategorias(); //acha os produtos acima do máximo
+    
 
-        int quantidadeProdutos = 0;
         for (Categoria categoria : categorias) { //adiciona à tabela
             List<Produto> produtosCategoria = produtoDAO.produtosCategoria(categoria);
             //quantidadeProdutos = produtoDAO.produtosCategoria(categoria);
@@ -152,7 +155,7 @@ private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Nom
      *
      * @param args método principal de FrmProdutoCategoria
      */
-    public static void main(String args[]) {
+    public static void main(String args[])  {
 
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -178,9 +181,13 @@ private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Nom
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ProdutoDAO produtoDAO = null;
-                CategoriaDAO categoriaDAO = null;
-                new FrmProdutoCategoria(produtoDAO, categoriaDAO).setVisible(true);
+                RemoteProduto produtoDAO = null;
+                RemoteCategoria categoriaDAO = null;
+                try {
+                    new FrmProdutoCategoria(produtoDAO, categoriaDAO).setVisible(true);
+                } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+                }
             }
         });
     }
