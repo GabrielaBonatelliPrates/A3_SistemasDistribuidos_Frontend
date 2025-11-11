@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import dao.ProdutoDAO;
 import java.io.File;
 import java.io.FileOutputStream;
 import controller.EmiteRelatorio;
@@ -22,26 +21,28 @@ import javax.swing.table.TableModel;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import java.io.FileOutputStream;
+import java.rmi.RemoteException;
 import java.util.List;
 import model.Produto;
+import remote.RemoteProduto;
 
 /** FrmProdutos é um JFrame para mostrar as informações e o status dos produtos
  * @author laispaivaportela
  */
 public class FrmProdutos extends javax.swing.JFrame {
-    private ProdutoDAO produtoDAO;
+    private RemoteProduto produtoDAO;
     private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Nome", "Preço Unitário", "Unidade", "Estoque Atual", "Estoque Mínimo", "Estoque Máximo", "Categoria", "Tamanho", "Embalagem" }, 0);
 
     /**
      * @param produtoDAO valor inicial de produtoDAO
      */
-    public FrmProdutos(ProdutoDAO produtoDAO) {
+    public FrmProdutos(RemoteProduto produtoDAO) throws RemoteException {
         this.produtoDAO = produtoDAO;
         initComponents();
         setExtendedState(FrmProdutos.MAXIMIZED_BOTH);
       mostrarTabela();
     }
-     public void mostrarTabela() {
+     public void mostrarTabela() throws RemoteException {
         modelo.setNumRows(0); //limpa as linhas do modelo da tabela
         List<Produto> listaProdutos = produtoDAO.pegarProdutos(); //pega todos os produtos do banco de dados
         for (Produto p : listaProdutos) { //passa por todos os produtos e cria as linhas da tabela com os dados solicitados
@@ -220,19 +221,28 @@ public class FrmProdutos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        mostrarTabela();
+        try {
+            mostrarTabela();
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
     }//GEN-LAST:event_formWindowOpened
 
     private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
         String nomeProduto = txtCampoPesquisa.getText();
 
-        String fichaProduto = produtoDAO.fichaProduto(nomeProduto); //pesquisa os dados armazenados do produto a partir do nome dele
+        String fichaProduto;
+        try {
+            fichaProduto = produtoDAO.fichaProduto(nomeProduto); //pesquisa os dados armazenados do produto a partir do nome dele
+        
         String statusProduto = produtoDAO.verificaProduto(nomeProduto); //pesquisa os dados armazenados do produto a partir do nome dele
 
         String dadosProduto = statusProduto + fichaProduto;
 
         txtFicha.setText(dadosProduto);
-
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
 
     }//GEN-LAST:event_btnPesquisarActionPerformed
 
@@ -241,7 +251,11 @@ public class FrmProdutos extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVoltarActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-       mostrarTabela();
+        try {
+            mostrarTabela();
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
     }//GEN-LAST:event_formWindowActivated
 
     private void BtnExportarTabelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnExportarTabelaActionPerformed
