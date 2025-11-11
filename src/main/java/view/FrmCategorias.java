@@ -1,33 +1,24 @@
 package view;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
+
+import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import dao.Conexao;
-import dao.CategoriaDAO;
-import model.Produto;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Scanner;
-import java.util.List;
-import dao.ProdutoDAO;
+import remote.RemoteCategoria;
 
 /** FrmCategorias é um JFrame para mostrar as informações das categorias
  *
  * @author laispaivaportela
  */
 public class FrmCategorias extends javax.swing.JFrame {
-private CategoriaDAO categoriaDAO;
+private RemoteCategoria categoriaDAO;
 
     /**
      * @param categoriaDAO valor inicial de categoriaDAO
      */
-    public FrmCategorias(CategoriaDAO categoriaDAO) {
+    public FrmCategorias(RemoteCategoria categoriaDAO) throws RemoteException {
         initComponents();
         setExtendedState(FrmCategorias.MAXIMIZED_BOTH);
         this.categoriaDAO = categoriaDAO;
@@ -189,12 +180,15 @@ private CategoriaDAO categoriaDAO;
     private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
         String nomeCategoria = txtCampoPesquisa.getText();
 
-        String fichaCategoria = categoriaDAO.fichaCategoria(nomeCategoria); //pesquisa os dados armazenados do produto a partir do nome dele
+        try{
+            String fichaCategoria = categoriaDAO.fichaCategoria(nomeCategoria);
+            txtFicha.setText(fichaCategoria);
+        }
+        catch (RemoteException ex){
+                        JOptionPane.showMessageDialog(this, ex.getMessage());
+
+        }//pesquisa os dados armazenados do produto a partir do nome dele
        // String statusCategoria = CategoriaDAO.verificaCategoria(statusCategoria); //pesquisa os dados armazenados da categoria a partir do nome dela (adicionar)
-
-
-
-        txtFicha.setText(fichaCategoria);
 
     }//GEN-LAST:event_btnPesquisarActionPerformed
 
@@ -210,6 +204,10 @@ private CategoriaDAO categoriaDAO;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }            
+        catch (RemoteException ex){
+                        JOptionPane.showMessageDialog(this, ex.getMessage());
+
+        }
     }//GEN-LAST:event_formWindowOpened
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
@@ -219,7 +217,11 @@ private CategoriaDAO categoriaDAO;
             jTableCategorias.setModel(model); //atualiza a exibição
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }             
+        } 
+       catch (RemoteException ex){
+                       JOptionPane.showMessageDialog(this, ex.getMessage());
+
+        }
     }//GEN-LAST:event_formWindowActivated
 
     /**
@@ -252,8 +254,12 @@ private CategoriaDAO categoriaDAO;
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                CategoriaDAO categoriaDAO = null;
-                new FrmCategorias(categoriaDAO).setVisible(true);
+                RemoteCategoria categoriaDAO = null;
+                try {
+                    new FrmCategorias(categoriaDAO).setVisible(true);
+                } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+                }
             }
         });
     }
