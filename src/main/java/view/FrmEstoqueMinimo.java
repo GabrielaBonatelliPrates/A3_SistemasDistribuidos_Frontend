@@ -1,11 +1,15 @@
 package view;
 
 import controller.EmiteRelatorio;
-import dao.ProdutoDAO;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.Produto;
+import remote.RemoteProduto;
 
 /** FrmEstoqueMinimo é um JFrame que mostra os produtos que estão com seus estoques abaixo do minimo
  *
@@ -14,14 +18,14 @@ import model.Produto;
 
 
 public class FrmEstoqueMinimo extends javax.swing.JFrame {
-private ProdutoDAO produtoDAO;
+private RemoteProduto produtoDAO;
 private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Nome", "Estoque Atual", "Estoque Mínimo"}, 0); //cria um modelo para a tabela
  
     /**
      *
      * @param produtoDAO valor inicial do produtoDAO
      */
-    public FrmEstoqueMinimo(ProdutoDAO produtoDAO) {
+    public FrmEstoqueMinimo(RemoteProduto produtoDAO) {
         this.produtoDAO = produtoDAO;
         initComponents();
         this.carregaTabela();    
@@ -35,7 +39,13 @@ private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Nom
          modelo.setRowCount(0); //limpa a tabela
         modelo.setNumRows(0); //posiciona na primeira linha da tabela
 
-        List<Produto> abaixoMinimo = produtoDAO.pegarProdutosAbaixoMinimo();    //acha os produtos abiaxo do minimo
+        List<Produto> abaixoMinimo;
+        try {
+            abaixoMinimo = produtoDAO.pegarProdutosAbaixoMinimo(); //acha os produtos abiaxo do minimo
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex);
+                return;
+        }
         
         for (Produto produto : abaixoMinimo) {  //adiciona à tabela
             modelo.addRow(new Object[]{
@@ -206,7 +216,7 @@ private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Nom
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ProdutoDAO produtoDAO = null;
+                RemoteProduto produtoDAO = null;
                 new FrmEstoqueMinimo(produtoDAO).setVisible(true);
             }
         });
