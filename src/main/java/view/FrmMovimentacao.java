@@ -1,18 +1,19 @@
 package view;
 
 import model.MovimentacaoEstoque;
-import dao.MovimentacaoDAO;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import controller.ControleEstoque;
-import dao.ProdutoDAO;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Produto;
+import remote.RemoteProduto;
+import remote.RemoteMovimento;
 
 /** FrmMovimentacao é um JFrame que da update na quantidade dos produtos no estoque.
  * 
@@ -21,9 +22,9 @@ import model.Produto;
  */
 
 public class FrmMovimentacao extends javax.swing.JFrame {
-    private ProdutoDAO produtoDAO;
+    private RemoteProduto produtoDAO;
     private Produto produto;
-    private MovimentacaoDAO movimentacaoDAO;
+    private RemoteMovimento movimentacaoDAO;
     private List<Produto> produtos;
 
     /**
@@ -31,12 +32,16 @@ public class FrmMovimentacao extends javax.swing.JFrame {
      * @param produtoDAO valor inicial do produtoDAO
      * @param movimentacaoDAO valor inicial do movimentacaoDAO
      */
-    public FrmMovimentacao(ProdutoDAO produtoDAO, MovimentacaoDAO movimentacaoDAO) {
+    public FrmMovimentacao(RemoteProduto produtoDAO, RemoteMovimento movimentacaoDAO) {
+        try {
         initComponents();
         this.produto = new Produto();
         this.produtoDAO = produtoDAO;
         this.movimentacaoDAO = movimentacaoDAO;
-        this.produtos = produtoDAO.pegarProdutos(); 
+        this.produtos = produtoDAO.pegarProdutos();
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
         setExtendedState(FrmMovimentacao.MAXIMIZED_BOTH);
     }
 
@@ -224,6 +229,10 @@ public class FrmMovimentacao extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Informe uma quantidade válida.");
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
         }
     }//GEN-LAST:event_JBAdicionarActionPerformed
 
@@ -275,6 +284,11 @@ public class FrmMovimentacao extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Informe uma quantidade válida.");
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
+            
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
         }
     }//GEN-LAST:event_JBRemoverActionPerformed
 
@@ -308,8 +322,8 @@ public class FrmMovimentacao extends javax.swing.JFrame {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ProdutoDAO produtoDAO = null;
-                MovimentacaoDAO movimentacaoDAO = null;
+                RemoteProduto produtoDAO = null;
+                RemoteMovimento movimentacaoDAO = null;
                 new FrmMovimentacao(produtoDAO, movimentacaoDAO).setVisible(true);
             }
         });
