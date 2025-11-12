@@ -1,10 +1,14 @@
 package view;
 
-import dao.ProdutoDAO;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import model.Produto;
 import controller.EmiteRelatorio;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import remote.RemoteProduto;
 
 /** FrmEstoqueMaximo é um JFrame que mostra os produtos que estão com seus estoques acima do máximo
  *
@@ -15,13 +19,13 @@ import controller.EmiteRelatorio;
 
 public class FrmEstoqueMaximo extends javax.swing.JFrame {
 private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Nome", "Estoque Atual", "Estoque Máximo"}, 0); //cria um modelo para a tabela
-private ProdutoDAO produtoDAO;
+private RemoteProduto produtoDAO;
 
     /**
      *
      * @param produtoDAO valor inicial do produtoDAO
      */
-    public FrmEstoqueMaximo(ProdutoDAO produtoDAO) {
+    public FrmEstoqueMaximo(RemoteProduto produtoDAO) {
         this.produtoDAO = produtoDAO;
         initComponents();
         this.carregaTabela();
@@ -36,7 +40,13 @@ private ProdutoDAO produtoDAO;
         modelo.setRowCount(0); //limpa a tabela
         modelo.setNumRows(0); //posiciona na primeira linha da tabela
 
-        List<Produto> acimaMaximo = produtoDAO.pegarProdutosAcimaMaximo(); //acha os produtos acima do máximo
+        List<Produto> acimaMaximo;
+    try {
+        acimaMaximo = produtoDAO.pegarProdutosAcimaMaximo(); //acha os produtos acima do máximo
+    } catch (RemoteException ex) {
+        JOptionPane.showMessageDialog(this, ex);
+                return;
+    }
         
         for (Produto produto : acimaMaximo) { //adiciona à tabela
             modelo.addRow(new Object[]{
@@ -195,7 +205,7 @@ private ProdutoDAO produtoDAO;
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ProdutoDAO produtoDAO = null;
+                RemoteProduto produtoDAO = null;
                 new FrmEstoqueMaximo(produtoDAO).setVisible(true);
             }
         });
