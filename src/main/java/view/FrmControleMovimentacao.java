@@ -1,54 +1,68 @@
 package view;
 
+import java.rmi.RemoteException;
+import java.sql.SQLException;
 import javax.swing.table.DefaultTableModel;
-import dao.MovimentacaoDAO;
 import java.util.ArrayList;
 import java.util.Date;
 import model.MovimentacaoEstoque;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import remote.RemoteMovimento;
 
-/** FrmControleMovimentacao é um JFrame que mostra as movimentacao feitas
+/**
+ * FrmControleMovimentacao é um JFrame que mostra as movimentacao feitas
  *
  * @author Davi-Wolff
  */
-
 public class FrmControleMovimentacao extends javax.swing.JFrame {
-        private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Tipo", "Quantidade", "Produto", "Data"}, 0);   //cria um modelo para a tabela
-    private MovimentacaoEstoque movimentacaoEstoque = new MovimentacaoEstoque();
-    private MovimentacaoDAO movimentacaoDAO;
 
-    
+    private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Tipo", "Quantidade", "Produto", "Data"}, 0);   //cria um modelo para a tabela
+    private MovimentacaoEstoque movimentacaoEstoque = new MovimentacaoEstoque();
+    private RemoteMovimento movimentacaoDAO;
+
     /**
-     * 
-     * @param movimentacaoDAO   valor inicial do movimentacaoDAO
+     *
+     * @param movimentacaoDAO valor inicial do movimentacaoDAO
      */
-    public FrmControleMovimentacao(MovimentacaoDAO movimentacaoDAO) {
+    public FrmControleMovimentacao(RemoteMovimento movimentacaoDAO) {
         this.movimentacaoDAO = movimentacaoDAO;
         initComponents();
         carregaTabela();
         setExtendedState(FrmControleMovimentacao.MAXIMIZED_BOTH);
     }
-    
+
     /**
      * @author Davi-Wolff
      */
     public void carregaTabela() {
-    
-    modelo.setRowCount(0); //limpa a tabela
 
-    List<MovimentacaoEstoque> movimentacoes = movimentacaoDAO.listarProdutosMovimentados();
+        modelo.setRowCount(0); //limpa a tabela
 
-    for (MovimentacaoEstoque movimentacao : movimentacoes) {
-        modelo.addRow(new Object[]{
-            movimentacao.getIdMovimentacao(),           //id da movimentação
-            movimentacao.getTipoMovimentacao(),         //tipo (entrada/saída)
-            movimentacao.getQuantidadeMovimentada(),    //quantidade movimentada
-            movimentacao.getNomeProduto(),              //nome do produto
-            movimentacao.getDataMovimentacao()          //data da movimentação
-        });
+        List<MovimentacaoEstoque> movimentacoes;
+        try {
+            movimentacoes = movimentacaoDAO.listarProdutosMovimentados();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex);
+            return;
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex);
+            return;
+        }
+
+        for (MovimentacaoEstoque movimentacao : movimentacoes) {
+            modelo.addRow(new Object[]{
+                movimentacao.getIdMovimentacao(), //id da movimentação
+                movimentacao.getTipoMovimentacao(), //tipo (entrada/saída)
+                movimentacao.getQuantidadeMovimentada(), //quantidade movimentada
+                movimentacao.getNomeProduto(), //nome do produto
+                movimentacao.getDataMovimentacao() //data da movimentação
+            });
+        }
+        JTMovimentacoes.setModel(modelo);
     }
-    JTMovimentacoes.setModel(modelo);
-}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -189,7 +203,7 @@ public class FrmControleMovimentacao extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                MovimentacaoDAO movimentacaoDAO = null;
+                RemoteMovimento movimentacaoDAO = null;
                 new FrmControleMovimentacao(movimentacaoDAO).setVisible(true);
             }
         });
