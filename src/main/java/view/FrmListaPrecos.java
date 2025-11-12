@@ -1,10 +1,12 @@
 package view;
 
 import controller.EmiteRelatorio;
-import dao.ProdutoDAO;
+import java.rmi.RemoteException;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.Produto;
+import remote.RemoteProduto;
 
 /** FrmListaPrecos é um JFrame para mostrar o relatório de lista de preços
  *
@@ -12,13 +14,13 @@ import model.Produto;
  */
 public class FrmListaPrecos extends javax.swing.JFrame {
 
-    private ProdutoDAO produtoDAO;
+    private RemoteProduto produtoDAO;
     private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id do Produto", "Nome do Produto", "Preço Unitário", "Unidade de Medida", "Categoria"}, 0);
 
     /**
      * @param produtoDAO  valor inicial de produtoDAO
      */
-    public FrmListaPrecos(ProdutoDAO produtoDAO) {
+    public FrmListaPrecos(RemoteProduto produtoDAO) {
         this.produtoDAO = produtoDAO;
         initComponents();
         this.mostrarTabela();
@@ -31,6 +33,8 @@ public class FrmListaPrecos extends javax.swing.JFrame {
     public void mostrarTabela() {
         modelo.setRowCount(0);
         modelo.setNumRows(0);
+        try {
+        
 
         List<Produto> todosProdutos = produtoDAO.produtosOrdemAlfabética(); //puxa a lista de todos os produtos em ordem alfabética
         for (Produto p : todosProdutos) { //percorre toda a lista de produtos adicionando nas colunas os dados requeridos
@@ -43,6 +47,9 @@ public class FrmListaPrecos extends javax.swing.JFrame {
             });
         }
         jTableListaPrecos.setModel(modelo); //atualiza a tabela
+        } catch (RemoteException e) {
+        JOptionPane.showMessageDialog(null, e.getMessage());
+    }
     }
 
     @SuppressWarnings("unchecked")
@@ -193,7 +200,7 @@ public class FrmListaPrecos extends javax.swing.JFrame {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ProdutoDAO produtoDAO = null;
+                RemoteProduto produtoDAO = null;
                 new FrmListaPrecos(produtoDAO).setVisible(true);
             }
         });
