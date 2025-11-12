@@ -1,30 +1,35 @@
 package view;
 
-import dao.CategoriaDAO;
+import java.rmi.RemoteException;
 import javax.swing.table.DefaultTableModel;
 import model.Produto;
-import dao.ProdutoDAO;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import model.Categoria;
+import remote.RemoteCategoria;
+import remote.RemoteProduto;
 
-/** FrmGerenciarProduto é um JFrame para atualizar e excluir produtos, além de reajustar os preços percentualmente
+/**
+ * FrmGerenciarProduto é um JFrame para atualizar e excluir produtos, além de
+ * reajustar os preços percentualmente
  *
  * @author GabrielaBonatelliPrates
  */
 public class FrmGerenciarProduto extends javax.swing.JFrame {
 
-    private ProdutoDAO produtoDAO;
-    private CategoriaDAO categoriaDAO;
+    private RemoteProduto produtoDAO;
+    private RemoteCategoria categoriaDAO;
 
     /**
      *
      * @param produtoDAO valor inicial de produtoDAO
      * @param categoriaDAO valor inicial de categoriaDAO
      */
-    public FrmGerenciarProduto(ProdutoDAO produtoDAO) {
+    public FrmGerenciarProduto(RemoteProduto produtoDAO, RemoteCategoria categoriaDAO) {
         this.produtoDAO = produtoDAO;
-        this.categoriaDAO = new CategoriaDAO();
+        this.categoriaDAO = categoriaDAO;
         initComponents();
         this.mostrarTabela();
         this.mostrarCategorias();
@@ -32,26 +37,32 @@ public class FrmGerenciarProduto extends javax.swing.JFrame {
     }
 
     /**
-     *Método que carrega na table todos os produtos cadastrados 
+     * Método que carrega na table todos os produtos cadastrados
      */
-    public void mostrarTabela() {
-        DefaultTableModel modelo = (DefaultTableModel) this.jTableGerenciaProdutos.getModel(); // para manipular a tabela 
-        modelo.setNumRows(0); //limpa as linhas do modelo da tabela
-        List<Produto> listaProdutos = produtoDAO.pegarProdutos(); //pega todos os produtos do banco de dados
-        for (Produto p : listaProdutos) { //passa por todos os produtos e cria as linhas da tabela com os dados solicitados
-            modelo.addRow(new Object[]{
-                p.getIdProduto(),
-                p.getNomeProduto(),
-                p.getPrecoUnit(),
-                p.getUnidadeProduto(),
-                p.getQuantidadeEstoque(),
-                p.getEstoqueMinimo(),
-                p.getEstoqueMaximo(),
-                p.getCategoria().getNomeCategoria(),
-                p.getCategoria().getTamanho(),
-                p.getCategoria().getEmbalagem()
-            });
-        }
+    public void mostrarTabela()  {
+            DefaultTableModel modelo = (DefaultTableModel) this.jTableGerenciaProdutos.getModel(); // para manipular a tabela 
+            modelo.setNumRows(0); //limpa as linhas do modelo da tabela
+            List<Produto> listaProdutos;//pega todos os produtos do banco de dados
+        try {
+            listaProdutos = produtoDAO.pegarProdutos();
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+            return;
+        } 
+            for (Produto p : listaProdutos) { //passa por todos os produtos e cria as linhas da tabela com os dados solicitados
+                modelo.addRow(new Object[]{
+                    p.getIdProduto(),
+                    p.getNomeProduto(),
+                    p.getPrecoUnit(),
+                    p.getUnidadeProduto(),
+                    p.getQuantidadeEstoque(),
+                    p.getEstoqueMinimo(),
+                    p.getEstoqueMaximo(),
+                    p.getCategoria().getNomeCategoria(),
+                    p.getCategoria().getTamanho(),
+                    p.getCategoria().getEmbalagem()
+                });
+            }
     }
 
     /**
@@ -59,7 +70,13 @@ public class FrmGerenciarProduto extends javax.swing.JFrame {
      */
     public void mostrarCategorias() {
         //Cria um ArrayList para mostrar os nomes das categorias cadastrados no banco de dados
-        List<Categoria> mostrarCategorias = categoriaDAO.mostrarCategorias();
+        List<Categoria> mostrarCategorias;
+                try {
+            mostrarCategorias = categoriaDAO.mostrarCategorias();
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+            return;
+        } 
 
         jComboBoxCategoria.removeAllItems(); //limpa itens anteriores para evitar erros
 
@@ -516,13 +533,20 @@ public class FrmGerenciarProduto extends javax.swing.JFrame {
 
     }//GEN-LAST:event_JTFUnidadeProdutoActionPerformed
 
-    
-/** método para reajustar o preco dos produtos com base em uma porcentagem pedida
- *
- * @author Davi-Wolff
- */
+    /**
+     * método para reajustar o preco dos produtos com base em uma porcentagem
+     * pedida
+     *
+     * @author Davi-Wolff
+     */
     private void JBReajustarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBReajustarProdutoActionPerformed
-        List<Produto> listaProdutos = produtoDAO.pegarProdutos();
+        List<Produto> listaProdutos;
+        try {
+            listaProdutos = produtoDAO.pegarProdutos();
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+            return;
+        }
         try {
             for (Produto produto : listaProdutos) { //cria um objeto Produto que passará por toda a lista "listaProdutos" que possui todos os produtos
                 if (produto.getNomeProduto().equals(JTFProdutoNovoPreco.getText())) { //quando o nome do produto for igual a um outro nome da lista
@@ -547,16 +571,26 @@ public class FrmGerenciarProduto extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Digite valores válidos.");
         } catch (Mensagem erro) {
             JOptionPane.showMessageDialog(null, erro.getMessage());
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
         }
 
     }//GEN-LAST:event_JBReajustarProdutoActionPerformed
 
-/** método para reajustar o preco dos produtos com base em uma porcentagem pedida
- *
- * @author Davi-Wolff
- */
+    /**
+     * método para reajustar o preco dos produtos com base em uma porcentagem
+     * pedida
+     *
+     * @author Davi-Wolff
+     */
     private void JBReajustarEstoqueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBReajustarEstoqueActionPerformed
-        List<Produto> listaProdutos = produtoDAO.pegarProdutos();
+        List<Produto> listaProdutos;
+        try {
+            listaProdutos = produtoDAO.pegarProdutos();
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+            return;
+        }
 
         try {
             for (Produto produto : listaProdutos) { //cria um objeto Produto que passará por toda a lista "listaProdutos" que possui todos os produtos
@@ -580,13 +614,17 @@ public class FrmGerenciarProduto extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Digite valores válidos.");
         } catch (Mensagem erro) {
             JOptionPane.showMessageDialog(null, erro.getMessage());
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
         }
     }//GEN-LAST:event_JBReajustarEstoqueActionPerformed
 
-/** método para mostrar as informações do produto para poderem ser alteradas ao clicar em um produto na tabela 
- *
- * @author GabrielaBonatelliPrates
- */
+    /**
+     * método para mostrar as informações do produto para poderem ser alteradas
+     * ao clicar em um produto na tabela
+     *
+     * @author GabrielaBonatelliPrates
+     */
     private void jTableGerenciaProdutosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableGerenciaProdutosMouseClicked
         //Evento para fazer os dados completarem os Text Field e a Combo Box quando clicar em um produto da tabela
         if (this.jTableGerenciaProdutos.getSelectedRow() != -1) {
@@ -615,13 +653,14 @@ public class FrmGerenciarProduto extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jTableGerenciaProdutosMouseClicked
 
-/** método para atualizar dados de um determinado produto selecionado
- *
- * @author GabrielaBonatelliPrates
- */
+    /**
+     * método para atualizar dados de um determinado produto selecionado
+     *
+     * @author GabrielaBonatelliPrates
+     */
     private void JBAtualizarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBAtualizarProdutoActionPerformed
         try {
-            
+
             //Criando variaveis para pegar os dados
             int idProduto = 0;
             String nomeProduto = "";
@@ -630,7 +669,7 @@ public class FrmGerenciarProduto extends javax.swing.JFrame {
             int quantidadeEstoque = 0;
             int estoqueMinimo = 0;
             int estoqueMaximo = 0;
-            
+
             //Checando erros em:
             // Atualizar nome do produto
             if (this.JTFNomeProduto.getText().length() < 2) {
@@ -734,10 +773,11 @@ public class FrmGerenciarProduto extends javax.swing.JFrame {
 
     }//GEN-LAST:event_JBAtualizarProdutoActionPerformed
 
-/** método para excluir um determinado produto
- *
- * @author GabrielaBonatelliPrates
- */
+    /**
+     * método para excluir um determinado produto
+     *
+     * @author GabrielaBonatelliPrates
+     */
     private void JBExcluirProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBExcluirProdutoActionPerformed
         try {
             int idProduto = 0; // variável para armazenar o ID excluído
@@ -768,17 +808,19 @@ public class FrmGerenciarProduto extends javax.swing.JFrame {
             }
         } catch (Mensagem e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
         } finally {
             mostrarTabela();
         }
     }//GEN-LAST:event_JBExcluirProdutoActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        this.mostrarTabela(); 
+            this.mostrarTabela();
     }//GEN-LAST:event_formWindowActivated
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        this.mostrarTabela();
+            this.mostrarTabela();
     }//GEN-LAST:event_formWindowOpened
 
     private void JBLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBLimparActionPerformed
@@ -820,8 +862,9 @@ public class FrmGerenciarProduto extends javax.swing.JFrame {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ProdutoDAO produtoDAO = null;
-                new FrmGerenciarProduto(produtoDAO).setVisible(true);
+                RemoteProduto produtoDAO = null;
+                RemoteCategoria categoriaDAO = null;
+                new FrmGerenciarProduto(produtoDAO, categoriaDAO).setVisible(true);
             }
         });
     }
