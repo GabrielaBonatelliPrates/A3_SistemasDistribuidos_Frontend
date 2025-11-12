@@ -1,19 +1,23 @@
 package view;
 
 import controller.EmiteRelatorio;
-import dao.ProdutoDAO;
+import java.rmi.RemoteException;
+import remote.RemoteProduto;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import model.Produto;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**FrmBalancoFinanceiro é um JFrame que mostra a relação de balanço financeiro entre produtos e valor de estoque 
  *
  * @author Mateo-Padilla
  */
 public class FrmBalancoFinanceiro extends javax.swing.JFrame {
-    private ProdutoDAO produtoDAO;
+    private RemoteProduto produtoDAO;
     private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Produto", "Quantidade", "Preço Unitário (R$)", "Preço Total Produto (R$)", "Preço Total Estoque (R$)"}, 0);
     private double valorTotalEstoque;
 
@@ -21,7 +25,7 @@ public class FrmBalancoFinanceiro extends javax.swing.JFrame {
      *
      * @param produtoDAO valor inicial de produtoDAO
      */
-    public FrmBalancoFinanceiro(ProdutoDAO produtoDAO) {
+    public FrmBalancoFinanceiro(RemoteProduto produtoDAO) {
         this.produtoDAO = produtoDAO;
         initComponents();
         mostraTabela();
@@ -38,7 +42,13 @@ public class FrmBalancoFinanceiro extends javax.swing.JFrame {
         modelo.setRowCount(0); //limpa a tabela
         modelo.setNumRows(0); //posiciona na primeira linha da tabela
 
-        List<Produto> todosProdutos = produtoDAO.pegarProdutos(); //acha os produtos acima do máximo
+        List<Produto> todosProdutos;
+        try {
+            todosProdutos = produtoDAO.pegarProdutos(); //acha os produtos acima do máximo
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+            return;
+        }
 
    //formata para moeda braseira
     NumberFormat formatoMoeda = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
@@ -53,8 +63,13 @@ public class FrmBalancoFinanceiro extends javax.swing.JFrame {
             null
         });
     }
-        //a coluna do preço total do estoque inteiro fica vazia nas linhas dos produtos
-        valorTotalEstoque = produtoDAO.valorTotal();
+        try {
+            //a coluna do preço total do estoque inteiro fica vazia nas linhas dos produtos
+            valorTotalEstoque = produtoDAO.valorTotal();
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+            
+        }
         //adiciona info do valor total do estoque na ultima linha de todas
         modelo.addRow(new Object[]{
             null,
@@ -251,7 +266,7 @@ public class FrmBalancoFinanceiro extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ProdutoDAO produtoDAO = null;
+                RemoteProduto produtoDAO = null;
                 new FrmBalancoFinanceiro(produtoDAO).setVisible(true);
             }
         });
