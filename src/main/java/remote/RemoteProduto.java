@@ -1,8 +1,9 @@
-
 package remote;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import model.Categoria;
+import model.Produto;
 
 public interface RemoteProduto {
     void cadastrarProduto(String nomeProduto, double precoUnit, String unidadeProduto, int quantidadeEstoque,
@@ -41,5 +42,11 @@ public interface RemoteProduto {
             throws RemoteException;
 
     String verificaProduto(String nomePesquisado)
+            throws RemoteException;
+    
+    boolean atualizarPreco(String nome, double preco, int id) 
+            throws RemoteException;
+    
+    List<Produto> produtosCategoria(Categoria categoriaPesquisada) 
             throws RemoteException;
 }
