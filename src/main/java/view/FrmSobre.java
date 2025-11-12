@@ -47,7 +47,7 @@ public class FrmSobre extends javax.swing.JFrame {
         JTASobre.setColumns(20);
         JTASobre.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         JTASobre.setRows(5);
-        JTASobre.setText("    Este é um projeto realizados por alunos da UNISUL, de uma sistema de armazenamento de uma loja, com banco de dados e interface gráfica. \n\n\n                                                                                      Dentre os colaboradores temos:\n\n\n\t        Nomes:\t\t                    Usuários do GitHub (Caso tenha interesse em nosso trabalho):\n\n\tDavi Wolff de Abreu\t\t\tDavi-Wolff\n\tEster da Rosa Mariani\t\t\tEstermrn\n\tGabriela Bonatelli Prates\t\t\tGabrielaBonatelliPrates\n\tLaís Paiva Portela\t\t\tlaispaivaportela\n\tMateo Alessandro Padilla Chalela\t\tMateo-Padilla\n\n\n              Nós não tivemos separação específica de tarefas. Entretanto é com orgulho que dizemos que todos nós trabalhamos em conjunto.\n");
+        JTASobre.setText("    Este é um projeto realizados por alunos da UNISUL, de uma sistema de armazenamento de uma loja, com banco de dados e interface gráfica. \n\n\n                                                                                      Dentre os colaboradores temos:\n\n\n\t        Nomes:\t\t                    Usuários do GitHub (Caso tenha interesse em nosso trabalho):\n\n\tDavi Wolff de Abreu\t\t\tDavi-Wolff\n\tCesar Augusto dos Santos\t\t\tc3sarrr\n\tGabriela Bonatelli Prates\t\t\tGabrielaBonatelliPrates\n\tMateo Alessandro Padilla Chalela\t\tMateo-Padilla\n\n\n              Nós não tivemos separação específica de tarefas. Entretanto é com orgulho que dizemos que todos nós trabalhamos em conjunto.\n");
         JTASobre.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED), javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(102, 102, 0))));
         JTASobre.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         JTASobre.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -70,20 +70,19 @@ public class FrmSobre extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(96, 96, 96)
-                        .addComponent(JLSobre, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(352, 352, 352)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1178, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(412, Short.MAX_VALUE))
+                .addGap(34, 34, 34)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(96, 96, 96)
+                .addComponent(JLSobre, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 241, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1500, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(201, 201, 201))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(JBVoltar)
-                .addGap(454, 454, 454))
+                .addGap(929, 929, 929))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -91,15 +90,15 @@ public class FrmSobre extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(48, 48, 48)
-                        .addComponent(JLSobre, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(92, 92, 92)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 439, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(JLSobre, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(31, 31, 31)
                         .addComponent(jLabel1)))
-                .addGap(50, 50, 50)
+                .addGap(70, 70, 70)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 521, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(79, 79, 79)
                 .addComponent(JBVoltar)
-                .addContainerGap(578, Short.MAX_VALUE))
+                .addContainerGap(489, Short.MAX_VALUE))
         );
 
         pack();
