@@ -14,13 +14,14 @@ public class RMIConnection {
     private static RemoteProduto produto;
     private static RemoteCategoria categoria;
     private static RemoteMovimento movimentacao;
+    private static RemoteConexao conexao;
 
     public static void connect(String host, int port) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry("localhost", 1099);
         produto = (RemoteProduto) registry.lookup("ProdutoService");
         categoria = (RemoteCategoria) registry.lookup("CategoriaService");
         movimentacao = (RemoteMovimento) registry.lookup("MovimentacaoService");
-        RemoteConexao conexao = (RemoteConexao) registry.lookup("ConexaoService");
+        conexao = (RemoteConexao) registry.lookup("ConexaoService");
     }
 
     public static void connect(String host) throws RemoteException, NotBoundException {
@@ -37,5 +38,9 @@ public class RMIConnection {
 
     public static RemoteMovimento getMovimentacao() {
         return movimentacao;
+    }
+    
+    public static RemoteConexao getConexao() {
+        return conexao;
     }
 }
