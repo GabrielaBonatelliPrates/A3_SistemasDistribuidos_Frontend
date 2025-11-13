@@ -7,15 +7,17 @@ import javax.swing.ImageIcon;
 import java.util.List;
 import model.Produto;
 import java.util.ArrayList;
-import dao.ProdutoDAO;
-import dao.CategoriaDAO;
-import dao.Conexao;
-import dao.MovimentacaoDAO;
 import java.awt.Color;
 import java.awt.Font;
+import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import remote.RemoteCategoria;
+import remote.RemoteConexao;
+import remote.RemoteProduto;
+import remote.RemoteMovimento;
+import rmiConnection.RMIConnection;
 
 /** FrmMenuPrincipal é um JFrame inicial para mostrar todas as disponibilidades do sistema
  *
@@ -23,9 +25,10 @@ import java.util.logging.Logger;
  */
 public class FrmMenuPrincipal extends javax.swing.JFrame {
     
-    private ProdutoDAO produtoDAO;
-    private CategoriaDAO categoriaDAO;
-    private MovimentacaoDAO movimentacaoDAO;
+    private RemoteProduto produtoDAO;
+    private RemoteCategoria categoriaDAO;
+    private RemoteMovimento movimentacaoDAO;
+    private RemoteConexao conexaoDAO;
     
     FrmRelatorios telaRelatorio = new FrmRelatorios(produtoDAO); //ainda vai adicionar implementação
     
@@ -35,13 +38,14 @@ public class FrmMenuPrincipal extends javax.swing.JFrame {
      * @param categoriaDAO valor inicial de categoriaDAO
      * @param movimentacaoDAO valor inicial de movimentacaoDAO
      */
-    public FrmMenuPrincipal(ProdutoDAO produtoDAO, CategoriaDAO categoriaDAO, MovimentacaoDAO movimentacaoDAO) {
+    public FrmMenuPrincipal(RemoteProduto produtoDAO, RemoteCategoria categoriaDAO, RemoteMovimento movimentacaoDAO, RemoteConexao conexaoDAO) {
         initComponents();
        setSize(1920, 1080);
        setExtendedState(FrmMenuPrincipal.MAXIMIZED_BOTH);
        this.produtoDAO = produtoDAO;
        this.categoriaDAO = categoriaDAO;
        this.movimentacaoDAO = movimentacaoDAO;
+       this.conexaoDAO = conexaoDAO;
        exibeStatus();
        editaJOption();
 
@@ -52,23 +56,40 @@ public class FrmMenuPrincipal extends javax.swing.JFrame {
      *@param exibeStatus método para mostrar o status do sistema 
      */
     public void exibeStatus() {
-        int numeroProdutos = produtoDAO.pegarProdutos().size(); //recebe o total de produtos (o tamanho da lista que pega os produtos presente no bd)
-        int numeroCategorias = categoriaDAO.mostrarCategorias().size();  //recebe o total de categotorias (o tamanho da lista que pega as categorias presente no bd)
-        String statusBD = ""; //declara o statusBD
-        Connection connection = Conexao.conectar(); //atribui a conexão à classe que faz a conexão com o banco de dados
-        if (connection != null) { //se o método conectar devolver algo que não é nul (ou seja, se contectar)
-            statusBD = "Banco de Dados Conectado!";
-        } else {
-            statusBD = "Banco de Dados não conectado.";
+        int numeroProdutos = 0;
+        int numeroCategorias = 0;
+        String statusConexao = "";
+        String statusBD ="";
+        try {
+            numeroProdutos = produtoDAO.pegarProdutos().size();
+            numeroCategorias = categoriaDAO.mostrarCategorias().size();
+            boolean conexao = conexaoDAO.testarConexao(); 
+            try {
+            conexaoDAO = RMIConnection.getConexao(); 
+
+            boolean conectado = conexaoDAO.testarConexao();
+            if (conectado) {
+                statusBD = "Banco de dados conectado";
+            } else {
+                statusBD = "Banco de dados falhou";
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        String status = String.format( //status do estoque + da conexao mysql
+            statusConexao = "Conexão RMI: OK";
+        } catch (RemoteException e) {
+            statusConexao = "Conexão RMI: Falhou";
+        }
+        String status = String.format(
                 " Status Estoque\n"
                 + "   Total de produtos cadastrados: %d\n"
                 + "   Total de categorias cadastradas: %d\n"
-                + "   Conexão MySQL: %s",
-                numeroProdutos, numeroCategorias, statusBD
+                + "   %s\n"
+                + "   %s",
+                numeroProdutos, numeroCategorias, statusConexao, statusBD
         );
-        txtStatus.setText(status); //imprime o status no text area
+        txtStatus.setText(status);
     }
 
     //deixa os JOptionPanes da classe com formatação padrão (mais elegante visualmente) 
@@ -653,9 +674,13 @@ public class FrmMenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuSairActionPerformed
 
     private void jMenuNovoProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuNovoProdutoActionPerformed
-       FrmProdutoNovo telaCadastro = new FrmProdutoNovo(produtoDAO, categoriaDAO);
-        telaCadastro.setVisible(true);
-        //Ativação da tela de cadastro de Produto
+        try {
+            FrmProdutoNovo telaCadastro = new FrmProdutoNovo(produtoDAO, categoriaDAO);
+            telaCadastro.setVisible(true);
+            //Ativação da tela de cadastro de Produto
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex);
+        }
 
     }//GEN-LAST:event_jMenuNovoProdutoActionPerformed
 
@@ -673,10 +698,14 @@ public class FrmMenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuBalancoFinanceiroActionPerformed
 
     private void jMenuProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuProdutosActionPerformed
-        //instancia a interface gráfica dos produtos
-        FrmProdutos produtos = new FrmProdutos(produtoDAO);
-         //deixa ela vísível
-        produtos.setVisible(true);
+        try {
+            //instancia a interface gráfica dos produtos
+            FrmProdutos produtos = new FrmProdutos(produtoDAO);
+            //deixa ela vísível
+            produtos.setVisible(true);
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex);
+        }
     }//GEN-LAST:event_jMenuProdutosActionPerformed
 
     private void jMenuAbaixoDaMinimaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuAbaixoDaMinimaActionPerformed
@@ -688,8 +717,12 @@ public class FrmMenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuAbaixoDaMinimaActionPerformed
 
     private void jMenuProdutosPorCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuProdutosPorCategoriaActionPerformed
-        FrmProdutoCategoria telaProdutoCategoria = new FrmProdutoCategoria(produtoDAO, categoriaDAO);
-          telaProdutoCategoria.setVisible(true);      
+        try {
+            FrmProdutoCategoria telaProdutoCategoria = new FrmProdutoCategoria(produtoDAO, categoriaDAO);      
+            telaProdutoCategoria.setVisible(true);
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex);
+        }
     }//GEN-LAST:event_jMenuProdutosPorCategoriaActionPerformed
 
     private void jMenuAdicionarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuAdicionarCategoriaActionPerformed
@@ -700,22 +733,30 @@ public class FrmMenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuAdicionarCategoriaActionPerformed
 
     private void jMenuGerenciaCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuGerenciaCategoriaActionPerformed
-        //instancia a interface gráfica para gerenciar as categorias
-        FrmGerenciarCategoria categoriaGerenciar = new FrmGerenciarCategoria(categoriaDAO);
-        //deixa ela vísível
-        categoriaGerenciar.setVisible(true);
+        try {
+            //instancia a interface gráfica para gerenciar as categorias
+            FrmGerenciarCategoria categoriaGerenciar = new FrmGerenciarCategoria(categoriaDAO);
+            //deixa ela vísível
+            categoriaGerenciar.setVisible(true);
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex);
+        }
     }//GEN-LAST:event_jMenuGerenciaCategoriaActionPerformed
 
     private void jMenuVerCategoriasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuVerCategoriasActionPerformed
-       //instancia a interface gráfica das categorias
-        FrmCategorias categorias = new FrmCategorias(categoriaDAO);
-        //deixa ela vísível
-        categorias.setVisible(true);
+        try {
+            //instancia a interface gráfica das categorias
+            FrmCategorias categorias = new FrmCategorias(categoriaDAO);
+            //deixa ela vísível
+            categorias.setVisible(true);
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex);
+        }
     }//GEN-LAST:event_jMenuVerCategoriasActionPerformed
 
     private void jMenuGerenciarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuGerenciarProdutoActionPerformed
         //instancia a interface gráfica do gerenciamento de  produto
-        FrmGerenciarProduto telaGerenciar = new FrmGerenciarProduto(produtoDAO);
+        FrmGerenciarProduto telaGerenciar = new FrmGerenciarProduto(produtoDAO, categoriaDAO);
         //deixa ela vísível
         telaGerenciar.setVisible(true);
     }//GEN-LAST:event_jMenuGerenciarProdutoActionPerformed
@@ -731,27 +772,31 @@ public class FrmMenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_JBRelatorioActionPerformed
 
     private void JBCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBCadastroActionPerformed
-        String[] opcoes = {"Adicionar Produto", "Adicionar Categoria", "Voltar"}; //opções
-        int escolha = mensagemOpcoes(opcoes); //manda pro metodo com JOptionPane 
-        switch (escolha) {
-            case 0:
-                mensagem("Carregando...");
-                FrmProdutoNovo telaCadastro = new FrmProdutoNovo(produtoDAO, categoriaDAO);
-                telaCadastro.setVisible(true);
-                break;
-            case 1:
-                mensagem("Carregando...");
-                //instancia a interface gráfica do cadastro de categoria
-                FrmCategoriaNova telaCategoria = new FrmCategoriaNova(produtoDAO, categoriaDAO);
-                //deixa ela vísível
-                telaCategoria.setVisible(true);
-                break;
-            case 2:
-                mensagem("Voltando...");
-                break;
-            default:
-                mensagem("Nenhuma opção selecionada.");
-                break;
+        try {
+            String[] opcoes = {"Adicionar Produto", "Adicionar Categoria", "Voltar"}; //opções
+            int escolha = mensagemOpcoes(opcoes); //manda pro metodo com JOptionPane
+            switch (escolha) {
+                case 0:
+                    mensagem("Carregando...");
+                    FrmProdutoNovo telaCadastro = new FrmProdutoNovo(produtoDAO, categoriaDAO);
+                    telaCadastro.setVisible(true);
+                    break;
+                case 1:
+                    mensagem("Carregando...");
+                    //instancia a interface gráfica do cadastro de categoria
+                    FrmCategoriaNova telaCategoria = new FrmCategoriaNova(produtoDAO, categoriaDAO);
+                    //deixa ela vísível
+                    telaCategoria.setVisible(true);
+                    break;
+                case 2:
+                    mensagem("Voltando...");
+                    break;
+                default:
+                    mensagem("Nenhuma opção selecionada.");
+                    break;
+            }
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex);
         }
     }//GEN-LAST:event_JBCadastroActionPerformed
 
@@ -782,29 +827,33 @@ public class FrmMenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_JBMovimentacaoActionPerformed
 
     private void JBGerenciamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBGerenciamentoActionPerformed
-        String[] opcoes = {"Gerenciar Produto", "Gerenciar Categoria", "Voltar"};
-         int escolha = mensagemOpcoes(opcoes); //manda pro metodo com JOptionPane 
-        switch (escolha) {
-            case 0:
-                mensagem("Carregando...");
-              //instancia a interface gráfica do gerenciamento de  produto
-        FrmGerenciarProduto telaGerenciar = new FrmGerenciarProduto(produtoDAO);
-        //deixa ela vísível
-        telaGerenciar.setVisible(true);
-                break;
-            case 1:
-                mensagem("Carregando...");
-                 //instancia a interface gráfica para gerenciar as categorias
-        FrmGerenciarCategoria categoriaGerenciar = new FrmGerenciarCategoria(categoriaDAO);
-        //deixa ela vísível
-        categoriaGerenciar.setVisible(true);
-                break;
-            case 2:
-                mensagem("Voltando...");
-                break;
-            default:
-                mensagem("Nenhuma opção selecionada.");
-                break;
+        try {
+            String[] opcoes = {"Gerenciar Produto", "Gerenciar Categoria", "Voltar"};
+            int escolha = mensagemOpcoes(opcoes); //manda pro metodo com JOptionPane
+            switch (escolha) {
+                case 0:
+                    mensagem("Carregando...");
+                    //instancia a interface gráfica do gerenciamento de  produto
+                    FrmGerenciarProduto telaGerenciar = new FrmGerenciarProduto(produtoDAO, categoriaDAO);
+                    //deixa ela vísível
+                    telaGerenciar.setVisible(true);
+                    break;
+                case 1:
+                    mensagem("Carregando...");
+                    //instancia a interface gráfica para gerenciar as categorias
+                    FrmGerenciarCategoria categoriaGerenciar = new FrmGerenciarCategoria(categoriaDAO);
+                    //deixa ela vísível
+                    categoriaGerenciar.setVisible(true);
+                    break;
+                case 2:
+                    mensagem("Voltando...");
+                    break;
+                default:
+                    mensagem("Nenhuma opção selecionada.");
+                    break;
+            }
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex);
         }
     }//GEN-LAST:event_JBGerenciamentoActionPerformed
 
