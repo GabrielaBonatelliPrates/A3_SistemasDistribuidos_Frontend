@@ -1,7 +1,13 @@
 package view;
 
-import dao.CategoriaDAO;
-import dao.ProdutoDAO;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import remote.RemoteCategoria;
+import remote.RemoteProduto;
+
+
 
 /**
  * FrmRelatorios é um JFrame que oferece os tipos de relatorios do sistema
@@ -10,14 +16,14 @@ import dao.ProdutoDAO;
  */
 public class FrmRelatorios extends javax.swing.JFrame {
 
-    private ProdutoDAO produtoDAO;
-    private CategoriaDAO categoriaDAO;
+    private RemoteProduto produtoDAO;
+    private RemoteCategoria categoriaDAO;
 
     /**
      *
      * @param produtoDAO valor inicial de produtoDAO
      */
-    public FrmRelatorios(ProdutoDAO produtoDAO) {
+    public FrmRelatorios(RemoteProduto produtoDAO) {
         initComponents();
         this.produtoDAO = produtoDAO;
         this.categoriaDAO = categoriaDAO;
@@ -169,10 +175,14 @@ public class FrmRelatorios extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void JBProdutosCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBProdutosCategoriaActionPerformed
-        //instancia a interface gráfica do relatório
-        FrmProdutoCategoria telaProdutoCategoria = new FrmProdutoCategoria(produtoDAO, categoriaDAO);
-        //deixa ela vísível   
-        telaProdutoCategoria.setVisible(true);
+        try {
+            //instancia a interface gráfica do relatório
+            FrmProdutoCategoria telaProdutoCategoria = new FrmProdutoCategoria(produtoDAO, categoriaDAO);
+            //deixa ela vísível
+            telaProdutoCategoria.setVisible(true);
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(this, ex);
+        }
     }//GEN-LAST:event_JBProdutosCategoriaActionPerformed
 
     private void JBBalancoFinanceiroMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JBBalancoFinanceiroMouseClicked
@@ -247,7 +257,7 @@ public class FrmRelatorios extends javax.swing.JFrame {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ProdutoDAO produtoDAO = null;
+                RemoteProduto produtoDAO = null;
                 new FrmRelatorios(produtoDAO).setVisible(true);
             }
         });
