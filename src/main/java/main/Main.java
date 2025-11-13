@@ -1,6 +1,8 @@
 package main;
 
 import controller.ControleEstoque;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 
 
@@ -12,8 +14,10 @@ public class Main {
     /**
      *
      * @param args metodo principal do projeto
+     * @throws java.sql.SQLException
+     * @throws java.rmi.RemoteException
      */
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, RemoteException, NotBoundException  {
         
         //instancia a classe "ControleEstoque"
         ControleEstoque controleEstoque = new ControleEstoque();
