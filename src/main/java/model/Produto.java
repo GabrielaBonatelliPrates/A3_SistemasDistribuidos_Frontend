@@ -1,10 +1,12 @@
 package model;
 
+import java.io.Serializable;
+
 /**classe Produto é uma classe para instanciar produtos
  *
  * @author Estermrn
  */
-public class Produto {
+public class Produto implements Serializable{
 
     /**
      * declaração das variáveis de intancia
