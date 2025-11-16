@@ -39,30 +39,30 @@ public class FrmGerenciarProduto extends javax.swing.JFrame {
     /**
      * Método que carrega na table todos os produtos cadastrados
      */
-    public void mostrarTabela()  {
-            DefaultTableModel modelo = (DefaultTableModel) this.jTableGerenciaProdutos.getModel(); // para manipular a tabela 
-            modelo.setNumRows(0); //limpa as linhas do modelo da tabela
-            List<Produto> listaProdutos;//pega todos os produtos do banco de dados
+    public void mostrarTabela() {
+        DefaultTableModel modelo = (DefaultTableModel) this.jTableGerenciaProdutos.getModel(); // para manipular a tabela 
+        modelo.setNumRows(0); //limpa as linhas do modelo da tabela
+        List<Produto> listaProdutos;//pega todos os produtos do banco de dados
         try {
             listaProdutos = produtoDAO.pegarProdutos();
         } catch (RemoteException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
             return;
-        } 
-            for (Produto p : listaProdutos) { //passa por todos os produtos e cria as linhas da tabela com os dados solicitados
-                modelo.addRow(new Object[]{
-                    p.getIdProduto(),
-                    p.getNomeProduto(),
-                    p.getPrecoUnit(),
-                    p.getUnidadeProduto(),
-                    p.getQuantidadeEstoque(),
-                    p.getEstoqueMinimo(),
-                    p.getEstoqueMaximo(),
-                    p.getCategoria().getNomeCategoria(),
-                    p.getCategoria().getTamanho(),
-                    p.getCategoria().getEmbalagem()
-                });
-            }
+        }
+        for (Produto p : listaProdutos) { //passa por todos os produtos e cria as linhas da tabela com os dados solicitados
+            modelo.addRow(new Object[]{
+                p.getIdProduto(),
+                p.getNomeProduto(),
+                p.getPrecoUnit(),
+                p.getUnidadeProduto(),
+                p.getQuantidadeEstoque(),
+                p.getEstoqueMinimo(),
+                p.getEstoqueMaximo(),
+                p.getCategoria().getNomeCategoria(),
+                p.getCategoria().getTamanho(),
+                p.getCategoria().getEmbalagem()
+            });
+        }
     }
 
     /**
@@ -71,12 +71,12 @@ public class FrmGerenciarProduto extends javax.swing.JFrame {
     public void mostrarCategorias() {
         //Cria um ArrayList para mostrar os nomes das categorias cadastrados no banco de dados
         List<Categoria> mostrarCategorias;
-                try {
+        try {
             mostrarCategorias = categoriaDAO.mostrarCategorias();
         } catch (RemoteException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
             return;
-        } 
+        }
 
         jComboBoxCategoria.removeAllItems(); //limpa itens anteriores para evitar erros
 
@@ -573,6 +573,8 @@ public class FrmGerenciarProduto extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, erro.getMessage());
         } catch (RemoteException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
+        } finally {
+            mostrarTabela();
         }
 
     }//GEN-LAST:event_JBReajustarProdutoActionPerformed
@@ -616,6 +618,8 @@ public class FrmGerenciarProduto extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, erro.getMessage());
         } catch (RemoteException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
+        } finally {
+            mostrarTabela();
         }
     }//GEN-LAST:event_JBReajustarEstoqueActionPerformed
 
@@ -816,11 +820,11 @@ public class FrmGerenciarProduto extends javax.swing.JFrame {
     }//GEN-LAST:event_JBExcluirProdutoActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-            this.mostrarTabela();
+        this.mostrarTabela();
     }//GEN-LAST:event_formWindowActivated
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-            this.mostrarTabela();
+        this.mostrarTabela();
     }//GEN-LAST:event_formWindowOpened
 
     private void JBLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBLimparActionPerformed

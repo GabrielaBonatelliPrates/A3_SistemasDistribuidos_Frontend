@@ -366,7 +366,7 @@ public class FrmProdutoNovo extends javax.swing.JFrame {
         try {
             String nomeProduto = "";
             int id = 0;
-            double valorUnitario = 0;
+            double valorUnitario = 0.0;
             String unidade = "";
             int quantidadeEstoque = 0;
             int quantidadeEstoqueMinima = 0;
@@ -381,13 +381,13 @@ public class FrmProdutoNovo extends javax.swing.JFrame {
             
             //Valor do produto
             int x = (int) Double.parseDouble(this.JTFValorProduto.getText());
-            if (x <= 0) {
+            if (x <= 0.0) {
                 throw new Mensagem("O valor do produto deve ser número e maior que zero. ");
             }
-            if (this.JTFValorProduto.getText().length() <= 0) {
+            if (this.JTFValorProduto.getText().length() <= 0.0) {
                 throw new Mensagem("O valor do produto deve ser número e maior que zero. ");
             } else {
-                valorUnitario = Integer.parseInt(this.JTFValorProduto.getText());
+                valorUnitario = Double.parseDouble(this.JTFValorProduto.getText());
             }
 
             //Unidade de medida do Produto
