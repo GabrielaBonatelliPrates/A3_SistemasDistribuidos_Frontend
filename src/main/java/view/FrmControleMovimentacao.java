@@ -19,7 +19,7 @@ import remote.RemoteMovimento;
  */
 public class FrmControleMovimentacao extends javax.swing.JFrame {
 
-    private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Tipo", "Quantidade", "Produto", "Data"}, 0);   //cria um modelo para a tabela
+    private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"IdMovimentacao", "IdProduto", "Produto", "Tipo", "Quantidade", "Data"}, 0);   //cria um modelo para a tabela
     private MovimentacaoEstoque movimentacaoEstoque = new MovimentacaoEstoque();
     private RemoteMovimento movimentacaoDAO;
 
@@ -30,7 +30,7 @@ public class FrmControleMovimentacao extends javax.swing.JFrame {
     public FrmControleMovimentacao(RemoteMovimento movimentacaoDAO) {
         this.movimentacaoDAO = movimentacaoDAO;
         initComponents();
-        carregaTabela();
+        this.carregaTabela();
         setExtendedState(FrmControleMovimentacao.MAXIMIZED_BOTH);
     }
 
@@ -56,8 +56,9 @@ public class FrmControleMovimentacao extends javax.swing.JFrame {
             modelo.addRow(new Object[]{
                 movimentacao.getIdMovimentacao(), //id da movimentação
                 movimentacao.getTipoMovimentacao(), //tipo (entrada/saída)
-                movimentacao.getQuantidadeMovimentada(), //quantidade movimentada
+                movimentacao.getIdProduto(), //id do produto
                 movimentacao.getNomeProduto(), //nome do produto
+                movimentacao.getQuantidadeMovimentada(), //quantidade movimentada
                 movimentacao.getDataMovimentacao() //data da movimentação
             });
         }
@@ -93,17 +94,17 @@ public class FrmControleMovimentacao extends javax.swing.JFrame {
 
         JTMovimentacoes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Id", "Tipo", "Quantidade", "Data"
+                "Id", "Tipo", "ID Produto", "Produto", "Quantidade", "Data"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {

@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import model.Produto;
 import remote.RemoteProduto;
 import remote.RemoteMovimento;
+import rmiConnection.RMIConnection;
 
 /** FrmMovimentacao é um JFrame que da update na quantidade dos produtos no estoque.
  * 
@@ -221,7 +222,6 @@ public class FrmMovimentacao extends javax.swing.JFrame {
             movimentacao.setQuantidadeMovimentada(quantidade);
             movimentacao.setTipoMovimentacao(tipoMovimentacao);
             movimentacaoDAO.cadastraMovimentacao(movimentacao);
-            //movimentacaoDAO.inserirMovimentacao(idProduto, data, quantidade, nomeProduto, tipoMovimentacao);
 
             JOptionPane.showMessageDialog(null, "Movimentação de entrada registrada com sucesso!");
 
@@ -276,9 +276,8 @@ public class FrmMovimentacao extends javax.swing.JFrame {
             movimentacao.setQuantidadeMovimentada(quantidade);
             movimentacao.setTipoMovimentacao(tipoMovimentacao);
             movimentacaoDAO.cadastraMovimentacao(movimentacao);
-            //movimentacaoDAO.inserirMovimentacao(idProduto, data, quantidade, nomeProduto, tipoMovimentacao);
 
-            JOptionPane.showMessageDialog(null, "Movimentação de entrada registrada com sucesso!");
+            JOptionPane.showMessageDialog(null, "Movimentação de saída registrada com sucesso!");
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Informe uma quantidade válida.");
@@ -323,7 +322,7 @@ public class FrmMovimentacao extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 RemoteProduto produtoDAO = null;
-                RemoteMovimento movimentacaoDAO = null;
+RemoteMovimento movimentacaoDAO = null;
                 new FrmMovimentacao(produtoDAO, movimentacaoDAO).setVisible(true);
             }
         });
