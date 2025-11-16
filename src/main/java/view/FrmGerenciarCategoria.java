@@ -29,6 +29,7 @@ private RemoteCategoria categoriaDAO;
         this.categoriaDAO = categoriaDAO;
         initComponents();
         setExtendedState(FrmGerenciarCategoria.MAXIMIZED_BOTH);
+        this.mostrarTabela();
 
     }
 
