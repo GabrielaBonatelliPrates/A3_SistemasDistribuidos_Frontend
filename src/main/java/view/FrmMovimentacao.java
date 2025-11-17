@@ -2,23 +2,18 @@ package view;
 
 import model.MovimentacaoEstoque;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
-import controller.ControleEstoque;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.Produto;
 import remote.RemoteProduto;
 import remote.RemoteMovimento;
-import rmiConnection.RMIConnection;
 
 /** FrmMovimentacao é um JFrame que da update na quantidade dos produtos no estoque.
  * 
- * @author Estermrn
+ *
  * @author Davi-Wolff
  */
 

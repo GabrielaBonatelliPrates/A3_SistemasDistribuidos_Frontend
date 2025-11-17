@@ -8,8 +8,6 @@ import javax.swing.table.DefaultTableModel;
 import model.Produto;
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**FrmBalancoFinanceiro é um JFrame que mostra a relação de balanço financeiro entre produtos e valor de estoque 
@@ -34,7 +32,7 @@ public class FrmBalancoFinanceiro extends javax.swing.JFrame {
     }
     
     /**
-     * @author laispaivaportela
+     * 
      *  Método para carregar na table os dados para o relatório
      */
     public void mostraTabela() {

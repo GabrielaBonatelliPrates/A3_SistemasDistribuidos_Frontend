@@ -15,7 +15,7 @@ import remote.RemoteCategoria;
 /**
  * FrmGerenciarCategoria é um JFrame para atualizar e excluir categorias.
  *
- * @author Estermrn
+ *
  */
 public class FrmGerenciarCategoria extends javax.swing.JFrame {
 private RemoteCategoria categoriaDAO;

@@ -29,7 +29,7 @@ import javax.swing.table.TableModel;
 
 /** Classe EmitirRelatorio é uma classe feita para emitir relatórios arquivos em pdf/word/excel
  *
- * @author laispaivaportela
+ * 
  */
 public class EmiteRelatorio {
 

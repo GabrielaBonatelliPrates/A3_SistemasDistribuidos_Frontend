@@ -1,8 +1,6 @@
 package view;
 
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import remote.RemoteCategoria;
 import remote.RemoteProduto;

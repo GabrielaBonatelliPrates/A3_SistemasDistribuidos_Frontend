@@ -3,12 +3,8 @@ package view;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import javax.swing.table.DefaultTableModel;
-import java.util.ArrayList;
-import java.util.Date;
 import model.MovimentacaoEstoque;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import remote.RemoteMovimento;
 

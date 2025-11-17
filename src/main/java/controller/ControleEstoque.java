@@ -14,7 +14,7 @@ import rmiConnection.RMIConnection;
  * classe ControleEstoque é uma classe utilizada para gerenciar a movimentação
  * do estoque
  *
- * @author laispaivaportela
+ * @author Cesar Augusto
  */
 public class ControleEstoque {
 

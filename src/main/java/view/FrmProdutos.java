@@ -1,33 +1,15 @@
 package view;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.swing.table.DefaultTableModel;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import java.io.File;
-import java.io.FileOutputStream;
 import controller.EmiteRelatorio;
-import java.io.IOException;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.table.TableModel;
-import javax.swing.JTable;
-import javax.swing.table.TableModel;
-import java.io.FileOutputStream;
 import java.rmi.RemoteException;
 import java.util.List;
 import model.Produto;
 import remote.RemoteProduto;
 
 /** FrmProdutos é um JFrame para mostrar as informações e o status dos produtos
- * @author laispaivaportela
+ * 
  */
 public class FrmProdutos extends javax.swing.JFrame {
     private RemoteProduto produtoDAO;

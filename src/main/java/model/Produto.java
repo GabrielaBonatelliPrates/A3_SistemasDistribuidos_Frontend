@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**classe Produto é uma classe para instanciar produtos
  *
- * @author Estermrn
+ * @author GabrielaBonatelliPrates
  */
 public class Produto implements Serializable{
 

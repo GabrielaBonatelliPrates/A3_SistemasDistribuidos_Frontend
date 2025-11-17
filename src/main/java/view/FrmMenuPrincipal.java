@@ -4,13 +4,9 @@ import java.net.MalformedURLException;
 import javax.swing.*;
 import java.net.URL;
 import javax.swing.ImageIcon;
-import java.util.List;
-import model.Produto;
-import java.util.ArrayList;
 import java.awt.Color;
 import java.awt.Font;
 import java.rmi.RemoteException;
-import java.sql.Connection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import remote.RemoteCategoria;
@@ -128,7 +124,7 @@ public class FrmMenuPrincipal extends javax.swing.JFrame {
     //cria mensagem formatada pro JOption Pane (showMessage)
 
     /**
-     *@author laispaivaportela
+     *
      *@param mensagem 
      */
     public void mensagem(String mensagem) {
@@ -147,7 +143,7 @@ public class FrmMenuPrincipal extends javax.swing.JFrame {
     }
     
     /**
-     *@author laispaivaportela
+     *
      *@param opcoes
      *@return
      */

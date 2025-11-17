@@ -9,7 +9,7 @@ import remote.RemoteCategoria;
 
 /**
  * FrmCategoriaNova é um JFrame usado para cadastrar novas categorias.
- * @author Estermrn
+ * 
  * @author GabrielaBonatelliPrates
  */
 public class FrmCategoriaNova extends javax.swing.JFrame {

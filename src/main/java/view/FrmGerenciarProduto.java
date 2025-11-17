@@ -4,8 +4,6 @@ import java.rmi.RemoteException;
 import javax.swing.table.DefaultTableModel;
 import model.Produto;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import model.Categoria;
 import remote.RemoteCategoria;

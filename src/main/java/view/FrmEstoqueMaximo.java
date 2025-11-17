@@ -5,14 +5,12 @@ import javax.swing.table.DefaultTableModel;
 import model.Produto;
 import controller.EmiteRelatorio;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import remote.RemoteProduto;
 
 /** FrmEstoqueMaximo é um JFrame que mostra os produtos que estão com seus estoques acima do máximo
  *
- * @author Estermrn
+ * 
  * @author Davi-Wolff
  */
 

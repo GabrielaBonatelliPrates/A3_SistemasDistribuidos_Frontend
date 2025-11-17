@@ -2,15 +2,13 @@ package view;
 
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import remote.RemoteCategoria;
 
 /** FrmCategorias é um JFrame para mostrar as informações das categorias
  *
- * @author laispaivaportela
+ * 
  */
 public class FrmCategorias extends javax.swing.JFrame {
 private RemoteCategoria categoriaDAO;

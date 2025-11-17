@@ -32,7 +32,7 @@ private DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Id", "Nom
     }
     
     /**
-     * @author laispaivaportela
+     * 
      * 
      * Método para carregar na table os dados para o relatório
      */
